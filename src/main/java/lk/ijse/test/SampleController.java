@@ -22,5 +22,10 @@ public class SampleController {
     public String sayHello() {
         return "Hello from Spring Boot!";
     }
+
+    @GetMapping("/test")
+    public String getHello() {
+        return "test";
+    }
 }
 
