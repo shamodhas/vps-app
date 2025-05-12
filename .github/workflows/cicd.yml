@@ -6,8 +6,9 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -21,25 +22,6 @@ jobs:
       - name: Build Spring Boot Application
         run: mvn clean package
 
-      - name: Debug Build Directory
-        run: ls -l target/
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build & Push Docker Image
-        run: docker build -t shamodha/vps-app -f ./Dockerfile .
-
-      - name: Tag Docker Image
-        run: docker tag shamodha/vps-app shamodha/vps-app:latest
-
-      - name: Push Docker Image to Docker Hub
-        run: docker push shamodha/vps-app:latest
-
-  docker:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
@@ -50,9 +32,13 @@ jobs:
           docker push shamodha/vps-app:latest
 
   deploy:
-    needs: docker
+    needs: build-and-push
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # Required to access the repo and context
+
       - name: Configure Kubeconfig
         run: echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
