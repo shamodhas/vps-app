@@ -27,5 +27,10 @@ public class SampleController {
     public String getHello() {
         return "test";
     }
+
+    @GetMapping("/vps")
+    public String tt() {
+        return "test";
+    }
 }
 
