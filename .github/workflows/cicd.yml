@@ -24,6 +24,18 @@ jobs:
       - name: Debug Build Directory
         run: ls -l target/
 
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build & Push Docker Image
+        run: docker build -t shamodha/vps-app -f ./Dockerfile .
+
+      - name: Tag Docker Image
+        run: docker tag shamodha/vps-app shamodha/vps-app:latest
+
+      - name: Push Docker Image to Docker Hub
+        run: docker push shamodha/vps-app:latest
+
   docker:
     needs: build
     runs-on: ubuntu-latest
