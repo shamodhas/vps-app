@@ -45,8 +45,10 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
           chmod 600 ~/.kube/config
 
-      - name: Validate Kubernetes Connection
-        run: kubectl cluster-info
+      - name: Debug Kubernetes Connection
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
 
       - name: Deploy to Kubernetes
         run: |
