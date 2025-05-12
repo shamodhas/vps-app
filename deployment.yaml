@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vps-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vps-app
+  template:
+    metadata:
+      labels:
+        app: vps-app
+    spec:
+      containers:
+        - name: vps-app
+          image: shamodha/vps-app:latest
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vps-app
+spec:
+  selector:
+    app: vps-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32000
+  type: NodePort
